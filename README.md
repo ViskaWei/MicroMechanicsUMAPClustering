@@ -1,5 +1,5 @@
 # MicroMechanicsUMAPClustering
-Multi-scale Progressive Damage Model with UMAP-Based Clustering for Laminates via XFEM
+A UMAP-based Clustering Method for Multi-scale Damage Analysis of Laminates
 
 Please refer to 'UMAP_Clustering.ipynb' to see the results in paper.
 
