@@ -11,9 +11,13 @@ Code will be public once the paper is published.
 # Instruction
 ### Install and setup virtual environment
 ```sudo apt-get install python3-venv ```
+
 ```mkdir -p ~/venv```
+
 ```cd ~/venv```
+
 ```python3 -m venv mmuc```
+
 ```source ~/venv/mmuc/bin/activate```
 
 ### Upgrade setuptools 
