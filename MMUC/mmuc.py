@@ -19,13 +19,12 @@ def load_data(DATASET, drop=True, index_col_name="Number"):
     else:
         raise 'can only read csv or xlsx file'
     vol = data.pop('vol')
-    num = data.pop('Number')
     if drop:
         keep_columns = data.columns[(data.sum()!=0)]
         keep_data = data[keep_columns]
-        return keep_data, keep_data.columns, vol, num
+        return keep_data, keep_data.columns, vol
     else:
-        return data, data.columns, vol, num
+        return data, data.columns, vol
 
 
 ########################### Preprocessing #######################################
@@ -55,7 +54,7 @@ def get_cluster(outEmbed, nCluster):
     return cluster_id, min_dist, kmap
 
 def run_hill_simple(DATASET, nCluster, nPCA, name='k', isCenter=True):
-    data,keep_columns, vol = load_data(DATASET, name=name, isVol=isVol)
+    data,keep_columns, vol = load_data(DATASET, name=name)
     if isCenter: 
         dataPREPRO = data - data.mean().mean() 
     else:
@@ -65,11 +64,13 @@ def run_hill_simple(DATASET, nCluster, nPCA, name='k', isCenter=True):
     cluster_id, min_dist, kmap = get_cluster(matEmbed, nCluster)
     data[f'C{nCluster}'] = cluster_id
     data[f'M{nCluster}'] = min_dist
-    if isVol: data['vol'] = vol
+    data['vol'] = vol
+    
     grouped = data.groupby([f'C{nCluster}'])
     cid = grouped[f'M{nCluster}'].idxmin().values
     cMat = data.iloc[cid][keep_columns]
     print('center Id:', cid)
+    
     data['t1'] = matEmbed[:,0]
     data['t2'] = matEmbed[:,1]    
     cluster_vol = grouped['vol'].sum().values
