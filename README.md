@@ -1,7 +1,11 @@
 # MicroMechanicsUMAPClustering
 If using this code for research or industrial purposes, please cite:
 
+Danhui Yang, Viska Wei et al.
+
 A UMAP-based Clustering Method for Multi-scale Damage Analysis of Laminates. Applied Mathematical Modelling
+
+https://doi.org/10.1016/j.apm.2022.06.017.
 
 
 
