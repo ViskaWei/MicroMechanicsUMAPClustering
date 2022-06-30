@@ -11,21 +11,24 @@ from scipy.spatial.distance import cdist
 
 ########################### Loading #######################################
 
-def load_data(DATASET, drop=True, index_col_name="Number"):
+def load_data(DATASET, index_col_name="Number"):
     if DATASET[-3:]=='csv':
         data = pd.read_csv(DATASET, delimiter=",", index_col=index_col_name)     
     elif DATASET[-4:]=='xlsx':
         data = pd.read_excel(DATASET, index_col=index_col_name)    
     else:
         raise 'can only read csv or xlsx file'
+    return data
+
+def prepro_data(data, drop=True, isCenter=False):
     vol = data.pop('vol')
     if drop:
-        keep_columns = data.columns[(data.sum()!=0)]
-        keep_data = data[keep_columns]
-        return keep_data, keep_data.columns, vol
+        cols = data.columns[(data.sum()!=0)]
+        data = data[cols]
     else:
-        return data, data.columns, vol
-
+        cols = data.columns
+    if isCenter: data = data - data.mean().mean() 
+    return data, cols, vol    
 
 ########################### Preprocessing #######################################
 
@@ -53,12 +56,10 @@ def get_cluster(outEmbed, nCluster):
     min_dist = np.min(cdist(outEmbed, kmap.cluster_centers_, 'euclidean'), axis=1)    
     return cluster_id, min_dist, kmap
 
-def run_hill_simple(DATASET, nCluster, nPCA, name='k', isCenter=True):
-    data,keep_columns, vol = load_data(DATASET, name=name)
-    if isCenter: 
-        dataPREPRO = data - data.mean().mean() 
-    else:
-        dataPREPRO = data
+def run_hill_simple(DATASET, nCluster, nPCA, name='k', drop=True, isCenter=True):
+    data = load_data(DATASET, name=name)
+    org_cols = data.columns
+    dataPREPRO, cols, vol = prepro_data(data, drop=True, isCenter=False):
     matPCA = get_pca(dataPREPRO,dim=nPCA)
     matEmbed = get_umap(matPCA)
     cluster_id, min_dist, kmap = get_cluster(matEmbed, nCluster)
@@ -68,7 +69,7 @@ def run_hill_simple(DATASET, nCluster, nPCA, name='k', isCenter=True):
     
     grouped = data.groupby([f'C{nCluster}'])
     cid = grouped[f'M{nCluster}'].idxmin().values
-    cMat = data.iloc[cid][keep_columns]
+    cMat = data.iloc[cid][org_cols]
     print('center Id:', cid)
     
     data['t1'] = matEmbed[:,0]
