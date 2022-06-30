@@ -3,7 +3,7 @@ If using this code for research or industrial purposes, please cite:
 
 Danhui Yang, Viska Wei et al.
 
-A UMAP-based Clustering Method for Multi-scale Damage Analysis of Laminates. Applied Mathematical Modelling
+A UMAP-based Clustering Method for Multi-scale Damage Analysis of Laminates. Applied Mathematical Modelling. Applied Mathematical Modelling (2022).
 
 https://doi.org/10.1016/j.apm.2022.06.017.
 
