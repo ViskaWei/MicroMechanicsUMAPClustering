@@ -8,7 +8,6 @@ from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 from scipy.spatial.distance import cdist
 
-
 ########################### Loading #######################################
 
 def load_data(DATASET, index_col_name="Number"):
@@ -38,11 +37,6 @@ def get_pca(mat, dim=6):
     print(matPCA.shape)
     return matPCA
 
-# def get_tsne(matPCA):
-#     matTSNE = TSNE(n_components=2, random_state = 525).fit_transform(matPCA)
-#     print(matTSNE.shape)
-#     return matTSNE
-
 def get_umap(matPCA):
     umapT = umap.UMAP(n_components=2, min_dist=0.0, n_neighbors=50, random_state=227)
     matUMAP = umapT.fit_transform(matPCA)
@@ -55,30 +49,6 @@ def get_cluster(outEmbed, nCluster):
     cluster_id = kmap.labels_ + 1
     min_dist = np.min(cdist(outEmbed, kmap.cluster_centers_, 'euclidean'), axis=1)    
     return cluster_id, min_dist, kmap
-
-def run_hill_simple(DATASET, nCluster, nPCA, name='k', drop=True, isCenter=True):
-    data = load_data(DATASET, name=name)
-    org_cols = data.columns
-    dataPREPRO, cols, vol = prepro_data(data, drop=True, isCenter=False):
-    matPCA = get_pca(dataPREPRO,dim=nPCA)
-    matEmbed = get_umap(matPCA)
-    cluster_id, min_dist, kmap = get_cluster(matEmbed, nCluster)
-    data[f'C{nCluster}'] = cluster_id
-    data[f'M{nCluster}'] = min_dist
-    data['vol'] = vol
-    
-    grouped = data.groupby([f'C{nCluster}'])
-    cid = grouped[f'M{nCluster}'].idxmin().values
-    cMat = data.iloc[cid][org_cols]
-    print('center Id:', cid)
-    
-    data['t1'] = matEmbed[:,0]
-    data['t2'] = matEmbed[:,1]    
-    cluster_vol = grouped['vol'].sum().values
-    print('check cluster volumn sum == 1:', cluster_vol.sum().round(3)) 
-    cMat['vol'] = cluster_vol
-    
-    return data,kmap,cMat
 
 ########################### Plotting #######################################
 
@@ -120,4 +90,3 @@ def save_cluster_ids(data, nCluster, outDir=None,name='kMat'):
 def save_centers(cMat,nCluster,outDir=None,name='cMat'):
     if outDir is None: outDir = './'
     cMat.to_csv(f'{outDir}{name}_C{nCluster}.csv') 
-['number']
